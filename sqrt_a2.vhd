@@ -32,7 +32,7 @@ begin
 
     begin
         if (reset = '1') then
-            D    <= resize(unsigned(A),D'length);
+            D    <= unsigned(A) & "00";
             R    <= (others => '0');
             Z    <= (others => '0');
             iter <= (others => '0');
@@ -42,7 +42,7 @@ begin
                 -- WAIT processor demand for a computation
                 when s_WAIT =>
                     Z    <= (others => '0');
-                    D    <= resize(unsigned(A),D'length);
+                    D    <= unsigned(A) & "00";
                     R    <= (others => '0');
                     iter <= (others => '0');
 
@@ -56,13 +56,13 @@ begin
                         -- update R
                         if (R >= to_signed(0,R'length)) then
                             R_next :=   shift_left(R,2)
-                                      + resize(signed(shift_right(D,2*n-2)),R'length)
+                                      + to_signed(to_integer(D(D'high downto D'high-1)),R'length)
                                       - resize(signed(shift_left(Z,2)),R'length)
                                       - 1;
                             R <= R_next;
                         else
                             R_next :=   shift_left(R,2)
-                                      + resize(signed(shift_right(D,2*n-2)),R'length)
+                                      + to_signed(to_integer(D(D'high downto D'high-1)),R'length)
                                       + resize(signed(shift_left(Z,2)),R'length)
                                       + 3;
                             R <= R_next;
