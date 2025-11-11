@@ -91,7 +91,11 @@ begin
             start <= '0';
         end loop;
 
-        wait;
+        -- End simulation
+        assert FALSE
+            report "Simulation finished."
+            severity failure;
+
     end process TEST;
 
 end a1;

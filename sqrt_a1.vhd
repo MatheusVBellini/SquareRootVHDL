@@ -28,22 +28,26 @@ begin
 
     begin
         if (reset = '1') then
-            curr_result <=(others => '1');
+            curr_result <=(0 => '1', others => '0');
             last_result <=(others => '0');
         elsif (rising_edge(clk)) then
+            -- state logic
             case state is
 
                 -- WAIT processor demand for a computation
                 when s_WAIT =>
-                    curr_result <= (others => '1');
+                    curr_result <= (0 => '1', others => '0');
                     last_result <= (others => '0');
 
                 -- COMPUTE the square root and output when ready
                 when s_COMPUTE =>
-                    if (finished_var = '0') then
+                    if (unsigned(A) = to_unsigned(0,A'length)) then
+                        curr_result <= (others => '0');
+                        last_result <= (others => '0');
+                    elsif (finished_var = '0') then
                         -- x(k+1) = x(k)-f(x(k))/f'(x(k))
-                        curr_result <= resize(shift_right(curr_result - unsigned(A)/curr_result,1),curr_result'length);
                         last_result <= curr_result;
+                        curr_result <= resize(shift_right(curr_result + unsigned(A)/curr_result,1),curr_result'length);
                     end if;
 
             end case;
