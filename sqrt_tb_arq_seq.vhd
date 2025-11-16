@@ -1,6 +1,6 @@
 -- Author: Matheus Violaro Bellini
 
-architecture a1 of SQRT_TB is
+architecture arq_seq of SQRT_TB is
 
     -- Components
     component SQRT is
@@ -98,4 +98,4 @@ begin
 
     end process TEST;
 
-end a1;
+end arq_seq;

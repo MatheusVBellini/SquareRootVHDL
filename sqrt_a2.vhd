@@ -25,7 +25,7 @@ begin
     result   <= std_logic_vector(Z(result'length-1 downto 0));
     finished <= '1' when (iter = n and state = s_COMPUTE) else '0';
 
-    -- Newton's Algorithm
+    -- Modified non-restoring integer square root algorithm
     process(clk, reset)
 
         variable R_next : signed(n+3 downto 0);
