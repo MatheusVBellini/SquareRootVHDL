@@ -10,7 +10,7 @@
 
 -- Questions to the professor:
 -- 1. Should I still use the control signals?
---      e.g. start, result
+--      e.g. start, result, finished
 
 architecture a3 of SQRT is
 begin
