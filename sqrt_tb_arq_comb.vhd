@@ -1,10 +1,10 @@
 -- Author: Matheus Violaro Bellini
 
 --
--- Testbench for testing the sequential
+-- Testbench for calculating the combinatorial
 -- square root calculators.
 --
-architecture arq_seq of SQRT_TB is
+architecture arq_comb of SQRT_TB is
 
     -- Components
     component SQRT is
@@ -43,9 +43,9 @@ begin
     generic map (n => n)
     port map(
         A        => input,
-        start    => start,
-        reset    => reset,
-        clk      => clk,
+        start    => '0',
+        reset    => '0',
+        clk      => '0',
         finished => finished,
         result   => output
     );
@@ -79,11 +79,6 @@ begin
             input <= curr_test;
             wait for CLK_PERIOD;
 
-            -- launch computation
-            start <= '1';
-            wait until finished = '1';
-            wait until rising_edge(clk);
-
             -- check output
             curr_result := std_logic_vector(to_unsigned(RESULT_VECTOR(i), output'length));
             assert (output = curr_result)
@@ -91,8 +86,6 @@ begin
                     integer'image(to_integer(unsigned(output))) & "."
                 severity error;
 
-            -- reset values
-            start <= '0';
         end loop;
 
         -- End simulation
@@ -102,4 +95,4 @@ begin
 
     end process TEST;
 
-end arq_seq;
+end arq_comb;
