@@ -9,22 +9,16 @@
 architecture arq_comb of SQRT_TB is
 
     -- Components
-    component SQRT is
+    component SQRT_comb is
         generic(n : integer := 32);
         port (
             A           : in    std_logic_vector(2*n-1 downto 0);
-            start       : in    std_logic;
-            reset       : in    std_logic;
-            clk         : in    std_logic;
-            finished    : out   std_logic;
             result      : out   std_logic_vector(n-1 downto 0)
         );
-    end component SQRT;
+    end component SQRT_comb;
 
     -- Inputs
     signal input    : std_logic_vector(2*n-1 downto 0) := (others => '0');
-    signal start    : std_logic := '0';
-    signal reset    : std_logic := '1';
     signal clk      : std_logic := '0';
 
     -- Outputs
@@ -41,14 +35,10 @@ architecture arq_comb of SQRT_TB is
 begin
 
     -- DUT instantiation
-    DUT : SQRT
+    DUT : SQRT_comb
     generic map (n => n)
     port map(
         A        => input,
-        start    => '0',
-        reset    => '0',
-        clk      => '0',
-        finished => finished,
         result   => output
     );
 
@@ -63,10 +53,7 @@ begin
 
     begin
         wait on clk;
-
-        -- turn off reset
         wait for 3*CLK_PERIOD;
-        reset <= '0';
 
         -- begin tests
         for i in TEST_VECTOR'range loop

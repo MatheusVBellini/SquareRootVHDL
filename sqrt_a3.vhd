@@ -6,13 +6,7 @@
 --
 -- This implementation is fully combinatorial.
 --
-
-
--- Questions to the professor:
--- 1. Should I still use the control signals?
---      e.g. start, result, finished
-
-architecture a3 of SQRT is
+architecture a3 of SQRT_comb is
 begin
     -- Modified non-restoring integer square root algorithm
     process (A)
@@ -58,7 +52,6 @@ begin
 
             -- drive signals
             result   <= std_logic_vector(Z(result'length-1 downto 0));
-            finished <= '1';
         end if;
     end process;
 end a3;
