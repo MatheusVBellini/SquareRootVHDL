@@ -28,15 +28,15 @@ begin
 
     begin
         if (reset = '1') then
-            curr_result <=(0 => '1', others => '0');
-            last_result <=(others => '0');
+            curr_result <= to_unsigned(1,curr_result'length);
+            last_result <= (others => '0');
         elsif (rising_edge(clk)) then
             -- state logic
             case state is
 
                 -- WAIT processor demand for a computation
                 when s_WAIT =>
-                    curr_result <= (0 => '1', others => '0');
+                    curr_result <= to_unsigned(1,curr_result'length);
                     last_result <= (others => '0');
 
                 -- COMPUTE the square root and output when ready
