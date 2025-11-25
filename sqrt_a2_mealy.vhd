@@ -7,8 +7,6 @@
 --
 -- The algorithm implementation follows a Mealy State Machine logic.
 --
-use work.utils_pkg.all;
-
 architecture a2_mealy of SQRT is
 
     type t_State is (s_WAIT, s_COMPUTE);
@@ -17,7 +15,7 @@ architecture a2_mealy of SQRT is
     signal D     : unsigned(2*n+1 downto 0); -- 2*n-1 bits (+2 : multiplication by 4)
     signal R     : signed(n+3 downto 0);     -- n-1 bits (+2 : multiplication by 4) (+1 sum) (+1 sign)
     signal Z     : unsigned(n+2 downto 0);   -- n-1 bits (+2 : multiplication by 4) (+1 sum)
-    signal iter  : unsigned(bits_needed(n+1)-1 downto 0);
+    signal iter  : integer range 0 to n;
 
 begin
     -- Combinational wires
@@ -35,7 +33,7 @@ begin
             D    <= unsigned(A) & "00";
             R    <= (others => '0');
             Z    <= (others => '0');
-            iter <= (others => '0');
+            iter <= 0;
         elsif (rising_edge(clk)) then
             case state is
 
@@ -44,14 +42,14 @@ begin
                     Z    <= (others => '0');
                     D    <= unsigned(A) & "00";
                     R    <= (others => '0');
-                    iter <= (others => '0');
+                    iter <= 0;
 
                 -- COMPUTE the square root and output when ready
                 when s_COMPUTE =>
                     -- algorithm
                     if (unsigned(A) = to_unsigned(0,A'length)) then
                         Z    <= (others => '0');
-                        iter <= to_unsigned(n,iter'length);
+                        iter <= n;
                     elsif (iter <= n-1) then
                         -- update R
                         if (R >= to_signed(0,R'length)) then

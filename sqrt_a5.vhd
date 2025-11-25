@@ -8,7 +8,6 @@
 -- This implementation is realized with a structural description
 -- to better control circuit area.
 --
-
 architecture a5 of SQRT is
 
     signal load_flag     : std_logic;

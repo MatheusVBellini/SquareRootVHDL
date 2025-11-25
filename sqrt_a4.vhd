@@ -6,13 +6,6 @@
 --
 -- This implementation uses a pipeline.
 --
-
--- Questions to the professor:
--- 1. Should I still use the control signals?
---      e.g. start, resultm finished
--- 2. What's the behavior of reset?
-use work.utils_pkg.all;
-
 architecture a4 of SQRT is
 
 type D_pipeline is array (0 to n) of unsigned(2*n+1 downto 0);
