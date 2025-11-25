@@ -48,6 +48,11 @@ begin
 
                 -- COMPUTE the square root and output when ready
                 when s_COMPUTE =>
+                    -- operation cancelling
+                    if (start = '0') then
+                        state <= s_WAIT;
+                    end if;
+
                     -- algorithm
                     if (iter = n) then
                         finished <= '1';
