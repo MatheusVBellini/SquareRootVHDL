@@ -7,7 +7,7 @@
 --
 -- The algorithm implementation follows a Mealy State Machine logic.
 --
-architecture a1 of SQRT is
+architecture a1_mealy of SQRT is
 
     type t_State is (s_WAIT, s_COMPUTE);
 
@@ -54,4 +54,4 @@ begin
         end if;
     end process;
 
-end a1;
+end a1_mealy;

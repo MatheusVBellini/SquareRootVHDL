@@ -9,7 +9,7 @@
 --
 use work.utils_pkg.all;
 
-architecture a2 of SQRT is
+architecture a2_mealy of SQRT is
 
     type t_State is (s_WAIT, s_COMPUTE);
 
@@ -83,4 +83,4 @@ begin
         end if;
     end process;
 
-end a2;
+end a2_mealy;
