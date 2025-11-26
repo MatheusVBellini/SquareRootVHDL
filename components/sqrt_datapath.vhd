@@ -7,12 +7,13 @@ use IEEE.numeric_std.all;
 entity sqrt_datapath is
     generic(n : integer := 32);
     port (
-        din    : in  unsigned(2*n-1 downto 0);
-        clk    : in  std_logic;
-        reset  : in  std_logic;
-        load   : in  std_logic;
-        enable : in  std_logic;
-        dout   : out unsigned(n-1 downto 0)
+        din       : in  unsigned(2*n-1 downto 0);
+        clk       : in  std_logic;
+        rst_ctrl  : in  std_logic;     -- inner registers
+        rst_sys   : in  std_logic;     -- input and output registers
+        load      : in  std_logic;
+        store     : in  std_logic;
+        dout      : out unsigned(n-1 downto 0)
     );
 end sqrt_datapath;
 
@@ -66,7 +67,7 @@ begin
             port map (
                 din   => even_in(i),  -- takes input from Mux
                 clk   => clk,
-                reset => reset,
+                reset => rst_sys,
                 dout  => even_out(i downto i)  -- output becomes Q state
             );
     end generate GEN_EVEN;
@@ -101,7 +102,7 @@ begin
             port map (
                 din   => odd_in(i),
                 clk   => clk,
-                reset => reset,
+                reset => rst_sys,
                 dout  => odd_out(i downto i)
             );
     end generate GEN_ODD;
@@ -113,7 +114,7 @@ begin
         port map (
             din   => not_r,
             clk   => clk,
-            reset => reset,
+            reset => rst_ctrl,
             dout  => Q_out
         );
 
@@ -136,7 +137,7 @@ begin
         port map (
             din   => R_in,
             clk   => clk,
-            reset => reset,
+            reset => rst_ctrl,
             dout  => R_out
         );
 
@@ -146,7 +147,7 @@ begin
         port map (
             din0 => output,
             din1 => Q_out,
-            sel  => enable,
+            sel  => store,
             dout => mux_output
         );
 
@@ -155,7 +156,7 @@ begin
         port map (
             din   => mux_output,
             clk   => clk,
-            reset => reset,
+            reset => rst_sys,
             dout  => output
         );
 

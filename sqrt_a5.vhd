@@ -10,14 +10,12 @@
 --
 architecture a5 of SQRT is
 
-    signal load_flag     : std_logic;
-    signal flush_flag    : std_logic;
-    signal finished_flag : std_logic;
+    signal load     : std_logic;
+    signal store    : std_logic;
+    signal flush    : std_logic;
 
     -- intermediate signals
-    signal data_path_rst : std_logic;
-    signal enable        : std_logic;
-    signal output        : unsigned(n-1 downto 0);
+    signal output : unsigned(n-1 downto 0);
 
 
 begin
@@ -28,25 +26,24 @@ begin
             start    => start,
             clk      => clk,
             reset    => reset,
-            load     => load_flag,
-            flush    => flush_flag,
-            finished => finished_flag
+            flush    => flush,
+            load     => load,
+            store    => store,
+            finished => finished
         );
 
-    data_path_rst <= flush_flag or reset;
-    enable        <= not finished_flag;
-    result        <= std_logic_vector(output);
     DATA_PATH : entity work.sqrt_datapath(a1)
         generic map (n => n)
         port map (
-            din    => unsigned(A),
-            clk    => clk,
-            reset  => data_path_rst,
-            load   => load_flag,
-            enable => enable,
-            dout   => output
+            din      => unsigned(A),
+            clk      => clk,
+            rst_ctrl => flush,
+            rst_sys  => reset,
+            load     => load,
+            store    => store,
+            dout     => output
         );
 
-    finished <= finished_flag;
+    result <= std_logic_vector(output);
 
 end a5;

@@ -10,15 +10,16 @@ entity sqrt_controller is
         start    : in  std_logic;
         clk      : in  std_logic;
         reset    : in  std_logic;
-        load     : out std_logic;
         flush    : out std_logic;
+        load     : out std_logic;
+        store    : out std_logic;
         finished : out std_logic
     );
 end sqrt_controller;
 
 architecture a1 of sqrt_controller is
 
-    type t_State is (s_WAIT, s_COMPUTE);
+    type t_State is (s_WAIT, s_INIT, s_COMPUTE, s_FINISHED);
     signal state : t_State;
 
     subtype t_Iter is integer range 0 to n;
@@ -26,21 +27,64 @@ architecture a1 of sqrt_controller is
 
 begin
 
-    -- Combinational wires
-    state    <= s_COMPUTE when (start = '1') else s_WAIT; -- Mealy States
-    finished <= '1' when (iter = n and state = s_COMPUTE) else '0';
-    load     <= '1' when (state = s_WAIT) else '0';
-    flush    <= '1' when (state = s_WAIT) else '0';
-
     -- Sequential signal control
     process (clk, reset)
     begin
         if (reset = '1') then
-            iter  <= 0;
+            iter     <= 0;
+            load     <= '0';
+            flush    <= '1';
+            store    <= '0';
+            finished <= '0';
         elsif (rising_edge(clk)) then
             case state is
-                when s_WAIT    => iter <= 0;
-                when s_COMPUTE => if (iter <= n - 1) then iter <= iter + 1; end if;
+
+                -- WAIT: do nothing and wait for assignment
+                when s_WAIT =>
+                    iter     <= 0;
+                    load     <= '1';
+                    flush    <= '1';
+                    store    <= '0';
+                    finished <= '0';
+
+                    if (start = '1') then
+                        state <= s_INIT;
+                    end if;
+
+                -- INIT: turn off flush and read input into the datapath
+                when s_INIT =>
+                    if (start = '0') then
+                        state <= s_WAIT;
+                    else
+                        flush <= '0';
+                        state <= s_COMPUTE;
+                    end if;
+
+                -- COMPUTE: apply iterations
+                when s_COMPUTE =>
+                    if (start = '0') then
+                        state <= s_WAIT;
+                    elsif (iter <= n - 1) then
+                        iter <= iter + 1;
+
+                        if (iter = 0) then
+                            load <= '0';
+                        elsif (iter = n-1) then
+                            store    <= '1';
+                            finished <= '1';
+                            state    <= s_FINISHED;
+                        end if;
+
+                    end if;
+
+                -- FINISHED: provide the result at the output tap
+                when s_FINISHED =>
+                    store <= '0';
+
+                    if (start = '0') then
+                        state <= s_WAIT;
+                    end if;
+
             end case;
         end if;
     end process;
