@@ -51,10 +51,9 @@ begin
                     -- operation cancelling
                     if (start = '0') then
                         state <= s_WAIT;
-                    end if;
 
                     -- algorithm
-                    if (iter = n) then
+                    elsif (iter = n) then
                         finished <= '1';
                         state    <= s_FINISHED;
                     elsif (unsigned(A) = to_unsigned(0,A'length)) then
