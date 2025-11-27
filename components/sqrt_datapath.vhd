@@ -108,7 +108,7 @@ begin
     end generate GEN_ODD;
 
     -- Q
-    not_r <= not R_out(n+1);
+    not_r <= not alu_out(n+1);
     Q_INST : entity work.shift_ff(a1)
         generic map (n => n)
         port map (
