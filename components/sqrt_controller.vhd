@@ -57,6 +57,7 @@ begin
                         state <= s_WAIT;
                     else
                         flush <= '0';
+                        load  <= '0';
                         state <= s_COMPUTE;
                     end if;
 
@@ -66,10 +67,8 @@ begin
                         state <= s_WAIT;
                     elsif (iter <= n - 1) then
                         iter <= iter + 1;
-
-                        if (iter = 0) then
-                            load <= '0';
-                        elsif (iter = n-1) then
+                        
+                        if (iter = n-1) then
                             store    <= '1';
                             finished <= '1';
                             state    <= s_FINISHED;
