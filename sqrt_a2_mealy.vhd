@@ -47,10 +47,7 @@ begin
                 -- COMPUTE the square root and output when ready
                 when s_COMPUTE =>
                     -- algorithm
-                    if (unsigned(A) = to_unsigned(0,A'length)) then
-                        Z    <= (others => '0');
-                        iter <= n;
-                    elsif (iter <= n-1) then
+                    if (iter <= n-1) then
                         -- update R
                         if (R >= to_signed(0,R'length)) then
                             R_next :=   shift_left(R,2)
