@@ -53,12 +53,10 @@ begin
                         state <= s_WAIT;
 
                     -- algorithm
-                    elsif (iter = n) then
+                    elsif (unsigned(A) = to_unsigned(0,A'length)) then
+                        Z        <= (others => '0');
                         finished <= '1';
                         state    <= s_FINISHED;
-                    elsif (unsigned(A) = to_unsigned(0,A'length)) then
-                        Z    <= (others => '0');
-                        iter <= n;
                     else
                         -- update R
                         if (R >= to_signed(0,R'length)) then
@@ -84,6 +82,12 @@ begin
 
                         D <= shift_left(D,2);
                         iter <= iter + 1;
+
+                        -- check if algorithm has finished
+                        if (iter + 1 = n) then
+                            finished <= '1';
+                            state    <= s_FINISHED;
+                        end if;
                     end if;
 
                     -- FINISHED state while start = '1'

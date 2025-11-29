@@ -22,6 +22,8 @@ begin
     -- Newton's Algorithm
     process(clk, reset)
 
+        variable result_check : unsigned(curr_result'range);
+
     begin
         if (reset = '1') then
             curr_result <= to_unsigned(1,curr_result'length);
@@ -46,9 +48,6 @@ begin
                         state <= s_WAIT;
 
                     -- algorithm
-                    elsif (last_result = curr_result) then
-                        state    <= s_FINISHED;
-                        finished <= '1';
                     elsif (unsigned(A) = to_unsigned(0,A'length)) then
                         curr_result <= (others => '0');
                         last_result <= (others => '0');
@@ -56,8 +55,15 @@ begin
                         finished    <= '1';
                     else
                         -- x(k+1) = x(k)-f(x(k))/f'(x(k))
+                        result_check := resize(shift_right(curr_result + unsigned(A)/curr_result,1),curr_result'length);
                         last_result <= curr_result;
-                        curr_result <= resize(shift_right(curr_result + unsigned(A)/curr_result,1),curr_result'length);
+                        curr_result <= result_check;
+
+                        -- check conversion
+                        if (result_check = curr_result) then
+                            state    <= s_FINISHED;
+                            finished <= '1';
+                        end if;
                     end if;
 
                 -- FINISHED state while start = '1'
