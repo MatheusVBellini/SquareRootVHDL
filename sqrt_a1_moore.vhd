@@ -28,6 +28,7 @@ begin
         if (reset = '1') then
             curr_result <= to_unsigned(1,curr_result'length);
             last_result <= (others => '0');
+            finished    <= '0';
         elsif (rising_edge(clk)) then
             -- state logic
             case state is
@@ -36,6 +37,7 @@ begin
                 when s_WAIT =>
                     curr_result <= to_unsigned(1,curr_result'length);
                     last_result <= (others => '0');
+                    finished    <= '0';
 
                     if (start = '1') then
                         state <= s_COMPUTE;

@@ -28,19 +28,21 @@ begin
 
     begin
         if (reset = '1') then
-            D    <= unsigned(A) & "00";
-            R    <= (others => '0');
-            Z    <= (others => '0');
-            iter <= 0;
+            D        <= unsigned(A) & "00";
+            R        <= (others => '0');
+            Z        <= (others => '0');
+            iter     <= 0;
+            finished <= '0';
         elsif (rising_edge(clk)) then
             case state is
 
                 -- WAIT processor demand for a computation
                 when s_WAIT =>
-                    Z    <= (others => '0');
-                    D    <= unsigned(A) & "00";
-                    R    <= (others => '0');
-                    iter <= 0;
+                    Z        <= (others => '0');
+                    D        <= unsigned(A) & "00";
+                    R        <= (others => '0');
+                    iter     <= 0;
+                    finished <= '0';
 
                     if (start = '1') then
                         state <= s_COMPUTE;
@@ -53,10 +55,6 @@ begin
                         state <= s_WAIT;
 
                     -- algorithm
-                    elsif (unsigned(A) = to_unsigned(0,A'length)) then
-                        Z        <= (others => '0');
-                        finished <= '1';
-                        state    <= s_FINISHED;
                     else
                         -- update R
                         if (R >= to_signed(0,R'length)) then
