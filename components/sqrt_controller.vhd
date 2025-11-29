@@ -19,7 +19,7 @@ end sqrt_controller;
 
 architecture a1 of sqrt_controller is
 
-    type t_State is (s_WAIT, s_INIT, s_COMPUTE, s_STORE, s_FINISHED);
+    type t_State is (s_WAIT, s_INIT, s_COMPUTE, s_FINISHED);
     signal state : t_State;
 
     subtype t_Iter is integer range 0 to n;
@@ -67,17 +67,10 @@ begin
                         state <= s_WAIT;
                     elsif (iter <= n - 1) then
                         iter <= iter + 1;
-                        
-                        if (iter = n-1) then
-                            state <= s_STORE;
-                        end if;
-
+                    else
+                        store <= '1';
+                        state <= s_FINISHED;
                     end if;
-                
-                -- STORE: expose the result to the output register
-                when s_STORE =>
-                    store <= '1';
-                    state <= s_FINISHED;
 
                 -- FINISHED: provide the result at the output tap
                 when s_FINISHED =>
