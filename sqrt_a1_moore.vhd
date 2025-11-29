@@ -14,7 +14,6 @@ architecture a1_moore of SQRT is
     signal state         : t_State;
     signal curr_result   : unsigned(n-1 downto 0);
     signal last_result   : unsigned(n-1 downto 0);
-    signal finished_var  : std_logic;
 
 begin
     -- Combinational wires
@@ -53,6 +52,8 @@ begin
                     elsif (unsigned(A) = to_unsigned(0,A'length)) then
                         curr_result <= (others => '0');
                         last_result <= (others => '0');
+                        state       <= s_FINISHED;
+                        finished    <= '1';
                     else
                         -- x(k+1) = x(k)-f(x(k))/f'(x(k))
                         last_result <= curr_result;
