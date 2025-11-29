@@ -18,8 +18,7 @@ architecture a1_moore of SQRT is
 
 begin
     -- Combinational wires
-    finished_var <= '1' when (last_result = curr_result and state = s_COMPUTE) else '0';
-    result       <= std_logic_vector(curr_result);
+    result <= std_logic_vector(curr_result);
 
     -- Newton's Algorithm
     process(clk, reset)
@@ -48,7 +47,7 @@ begin
                         state <= s_WAIT;
 
                     -- algorithm
-                    elsif (finished_var = '1') then
+                    elsif (last_result = curr_result) then
                         state    <= s_FINISHED;
                         finished <= '1';
                     elsif (unsigned(A) = to_unsigned(0,A'length)) then
