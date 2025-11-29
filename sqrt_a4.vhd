@@ -12,16 +12,15 @@ type D_pipeline is array (0 to n) of unsigned(2*n+1 downto 0);
 type Z_pipeline is array (0 to n) of unsigned(n+2 downto 0);
 type R_pipeline is array (0 to n) of signed(n+3 downto 0);
 
-signal D    : D_pipeline;
-signal Z    : Z_pipeline;
-signal R    : R_pipeline;
---signal iter : unsigned(bits_needed(n+1)-1 downto 0);
+signal D     : D_pipeline := (others => (others => '0'));
+signal Z     : Z_pipeline := (others => (others => '0'));
+signal R     : R_pipeline := (others => (others => '0'));
+signal valid : std_logic_vector(n+1 downto 0); -- n+1 because the pipeline needs 1 iteration for input loading
 
 begin
     -- output
     result   <= std_logic_vector(Z(n)(result'length-1 downto 0));
-    finished <= '0'; -- dummy value
-    --finished <= '1' when (iter = n and start = '1') else '0';
+    finished <= valid(n+1);
 
     -- Modified non-restoring integer square root algorithm
     process (clk, reset)
@@ -31,18 +30,14 @@ begin
     begin
         if (reset = '1') then
 
-            D(0) <= unsigned(A) & "00";
-            R(0) <= (others => '0');
-            Z(0) <= (others => '0');
-            --iter <= (others => '0');
+            valid <= (others => '0');
+            D(0)  <= (others => '0');
+            R(0)  <= (others => '0');
+            Z(0)  <= (others => '0');
 
         elsif (rising_edge(clk)) then
-            -- pipeline tracking counter
-            --if (start = '0') then
-            --    iter <= (others => '0');
-            --elsif (iter <= n-1) then
-            --    iter <= iter + 1;
-            --end if;
+            -- valid pipeline update
+            valid <= valid(n downto 0) & '1';
 
             -- initial values
             D(0) <= unsigned(A) & "00";

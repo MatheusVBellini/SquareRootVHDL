@@ -73,25 +73,47 @@ begin
             report "Beginning test..."
             severity note;
 
-        -- load values in a stream
         for i in TEST_VECTOR'range loop
+
+            -- check that 'finished' is '0'
+            assert finished = '0'
+                report "Expected 'finished' to be '0' at pipeline value loading iteration " & integer'image(i)
+                severity error;
+
+            -- load new value in the pipeline
             wait for CLK_PERIOD;
             curr_test := std_logic_vector(to_unsigned(TEST_VECTOR(i), input'length));
             input <= curr_test;
             start <= '1';
+
         end loop;
         for i in 1 to (n - TEST_VECTOR'length + 3) loop
+
+            -- check that 'finished' is '0'
+            assert finished = '0'
+                report "Expected 'finished' to be '0' at pipeline waiting iteration " & integer'image(i)
+                severity error;
+
+            -- wait pipeline to be ready
             wait until rising_edge(clk);
+
         end loop;
 
-        -- check output
         for i in TEST_VECTOR'range loop
+
+            -- check that 'finished' is '1'
+            assert finished = '1'
+                report "Expected 'finished' to be '1' at pipeline evaluation iteration " & integer'image(i)
+                severity error;
+
+            -- verify output results
             curr_result := std_logic_vector(to_unsigned(RESULT_VECTOR(i), output'length));
             assert (output = curr_result)
                 report "Expected: " & integer'image(to_integer(unsigned(curr_result))) & ". Got: " &
                     integer'image(to_integer(unsigned(output))) & "."
                 severity error;
             wait for CLK_PERIOD;
+
         end loop;
 
         -- reset values

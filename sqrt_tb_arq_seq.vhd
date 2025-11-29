@@ -81,6 +81,11 @@ begin
             input <= curr_test;
             wait for CLK_PERIOD;
 
+            -- sanity check : at this point 'finished' should always be '0'
+            assert (finished = '0')
+                report ">finished< output signal is 1 when it should have been 0. Verify internal control signal logic."
+                severity failure;
+
             -- launch computation
             start <= '1';
             wait until finished = '1';
