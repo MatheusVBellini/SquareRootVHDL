@@ -19,7 +19,7 @@ end sqrt_controller;
 
 architecture a1 of sqrt_controller is
 
-    type t_State is (s_WAIT, s_INIT, s_COMPUTE, s_FINISHED);
+    type t_State is (s_WAIT, s_COMPUTE, s_FINISHED);
     signal state : t_State;
 
     subtype t_Iter is integer range 0 to n;
@@ -48,14 +48,6 @@ begin
                     finished <= '0';
 
                     if (start = '1') then
-                        state <= s_INIT;
-                    end if;
-
-                -- INIT: turn off flush and read input into the datapath
-                when s_INIT =>
-                    if (start = '0') then
-                        state <= s_WAIT;
-                    else
                         flush <= '0';
                         load  <= '0';
                         state <= s_COMPUTE;
@@ -76,9 +68,9 @@ begin
                 when s_FINISHED =>
                     store <= '0';
                     finished <= '1';
-
                     if (start = '0') then
-                        state <= s_WAIT;
+                        state    <= s_WAIT;
+                        finished <= '0';
                     end if;
 
             end case;
