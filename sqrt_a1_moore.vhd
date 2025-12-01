@@ -13,7 +13,6 @@ architecture a1_moore of SQRT is
 
     signal state         : t_State;
     signal curr_result   : unsigned(n-1 downto 0);
-    signal last_result   : unsigned(n-1 downto 0);
 
 begin
     -- Combinational wires
@@ -26,18 +25,18 @@ begin
 
     begin
         if (reset = '1') then
-            curr_result <= to_unsigned(1,curr_result'length);
-            last_result <= (others => '0');
-            finished    <= '0';
+            curr_result                 <= (others => '0');
+            curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle 
+            finished                    <= '0';
         elsif (rising_edge(clk)) then
             -- state logic
             case state is
 
                 -- WAIT processor demand for a computation
                 when s_WAIT =>
-                    curr_result <= to_unsigned(1,curr_result'length);
-                    last_result <= (others => '0');
-                    finished    <= '0';
+                    curr_result                 <= (others => '0');
+                    curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle 
+                    finished                    <= '0';
 
                     if (start = '1') then
                         state <= s_COMPUTE;
@@ -52,13 +51,11 @@ begin
                     -- algorithm
                     elsif (unsigned(A) = to_unsigned(0,A'length)) then
                         curr_result <= (others => '0');
-                        last_result <= (others => '0');
                         state       <= s_FINISHED;
                         finished    <= '1';
                     else
                         -- x(k+1) = x(k)-f(x(k))/f'(x(k))
                         result_check := resize(shift_right(curr_result + unsigned(A)/curr_result,1),curr_result'length);
-                        last_result <= curr_result;
                         curr_result <= result_check;
 
                         -- check conversion
