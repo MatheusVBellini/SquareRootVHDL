@@ -21,37 +21,34 @@ begin
         D := unsigned(A) & "00";
         R := (others => '0');
         Z := (others => '0');
+       
+        for i in 0 to n-1 loop
+            -- update R
+            if (R >= to_signed(0,R'length)) then
+                R_next :=   shift_left(R,2)
+                            + to_signed(to_integer(D(D'high downto D'high-1)),R'length)
+                            - resize(signed(shift_left(Z,2)),R'length)
+                            - 1;
+            else
+                R_next :=   shift_left(R,2)
+                            + to_signed(to_integer(D(D'high downto D'high-1)),R'length)
+                            + resize(signed(shift_left(Z,2)),R'length)
+                            + 3;
+            end if;
 
-        if (unsigned(A) = to_unsigned(0,A'length)) then
-            -- output == input
-        else
-            for i in 0 to n-1 loop
-                -- update R
-                if (R >= to_signed(0,R'length)) then
-                    R_next :=   shift_left(R,2)
-                                + to_signed(to_integer(D(D'high downto D'high-1)),R'length)
-                                - resize(signed(shift_left(Z,2)),R'length)
-                                - 1;
-                else
-                    R_next :=   shift_left(R,2)
-                                + to_signed(to_integer(D(D'high downto D'high-1)),R'length)
-                                + resize(signed(shift_left(Z,2)),R'length)
-                                + 3;
-                end if;
+            -- update Z
+            if (R_next >= 0) then
+                Z := shift_left(Z,1) + 1;
+            else
+                Z := shift_left(Z,1);
+            end if;
 
-                -- update Z
-                if (R_next >= 0) then
-                    Z := shift_left(Z,1) + 1;
-                else
-                    Z := shift_left(Z,1);
-                end if;
+            D := shift_left(D,2);
+            R := R_next;
+        end loop;
 
-                D := shift_left(D,2);
-                R := R_next;
-            end loop;
-
-            -- drive signals
-            result   <= std_logic_vector(Z(result'length-1 downto 0));
-        end if;
+        -- drive signals
+        result   <= std_logic_vector(Z(result'length-1 downto 0));
+        
     end process;
 end a3;
