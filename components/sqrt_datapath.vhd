@@ -132,7 +132,7 @@ begin
         );
 
     -- R
-    DFF_INST : entity work.dff(a1)
+    DFF_INST : entity work.my_dff(a1)
         generic map (n => n+2)
         port map (
             din   => R_in,
@@ -151,7 +151,7 @@ begin
             dout => mux_output
         );
 
-    OUTPUT_REG : entity work.dff(a1)
+    OUTPUT_REG : entity work.my_dff(a1)
         generic map (n => n)
         port map (
             din   => mux_output,
