@@ -34,8 +34,8 @@ architecture arq_pipe of SQRT_TB is
     -- Constants
     type int_array is array (natural range <>) of integer;
     constant TEST_COUNT    : integer := 5;
-    constant TEST_VECTOR   : int_array(0 to TEST_COUNT-1) := (0, 1, 512, 5499030, 119487748);
-    constant RESULT_VECTOR : int_array(0 to TEST_COUNT-1) := (0, 1, 22, 2345, 10931);
+    constant TEST_VECTOR   : int_array(0 to TEST_COUNT-1) := (0, 1, 512, 5499030, 1194877489);
+    constant RESULT_VECTOR : int_array(0 to TEST_COUNT-1) := (0, 1, 22, 2345, 34567);
     constant CLK_PERIOD    : time := 10 ns;
 
 begin
