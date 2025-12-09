@@ -66,7 +66,7 @@ begin
             wait for CLK_PERIOD;
             curr_test := std_logic_vector(to_unsigned(TEST_VECTOR(i), input'length));
             if i = TEST_VECTOR'high then
-                curr_test := (31 downto 0 => '1', others => '0'); -- correction for 2^32 - 1
+                curr_test := (63 downto 32 => '0', 31 downto 0 => '1'); -- correction for 2^32 - 1
             end if;
             input <= curr_test;
             wait for CLK_PERIOD;
