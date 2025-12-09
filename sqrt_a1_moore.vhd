@@ -26,7 +26,7 @@ begin
     begin
         if (reset = '1') then
             curr_result                 <= (others => '0');
-            curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle 
+            curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle
             finished                    <= '0';
         elsif (rising_edge(clk)) then
             -- state logic
@@ -35,7 +35,7 @@ begin
                 -- WAIT processor demand for a computation
                 when s_WAIT =>
                     curr_result                 <= (others => '0');
-                    curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle 
+                    curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle
                     finished                    <= '0';
 
                     if (start = '1') then
@@ -59,7 +59,7 @@ begin
                         curr_result <= result_check;
 
                         -- check conversion
-                        if (result_check = curr_result) then
+                        if (result_check >= curr_result) then
                             state    <= s_FINISHED;
                             finished <= '1';
                         end if;

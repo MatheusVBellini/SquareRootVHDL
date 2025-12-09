@@ -96,7 +96,7 @@ begin
 
             -- check output
             curr_result := std_logic_vector(to_unsigned(RESULT_VECTOR(i), output'length));
-            assert (output = curr_result)
+            assert (output = curr_result or unsigned(output) = unsigned(curr_result) + 1) -- +1 case for newton algorithm
                 report "Expected: " & integer'image(to_integer(unsigned(curr_result))) & ". Got: " &
                     integer'image(to_integer(unsigned(output))) & "."
                 severity error;

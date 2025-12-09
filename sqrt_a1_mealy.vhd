@@ -12,8 +12,8 @@ architecture a1_mealy of SQRT is
     type t_State is (s_WAIT, s_COMPUTE);
 
     signal state         : t_State;
-    signal curr_result   : unsigned(n-1 downto 0);
-    signal last_result   : unsigned(n-1 downto 0);
+    signal curr_result   : unsigned(n-1 downto 0) := (others => '0');
+    signal last_result   : unsigned(n-1 downto 0) := (others => '0');
     signal finished_var  : std_logic;
 
 begin
@@ -26,10 +26,12 @@ begin
     -- Newton's Algorithm
     process(clk, reset)
 
+        variable result_check : unsigned(curr_result'range);
+
     begin
         if (reset = '1') then
             curr_result                 <= (others => '0');
-            curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle 
+            curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle
             last_result                 <= (others => '0');
         elsif (rising_edge(clk)) then
             -- state logic
@@ -38,7 +40,7 @@ begin
                 -- WAIT processor demand for a computation
                 when s_WAIT =>
                     curr_result                 <= (others => '0');
-                    curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle 
+                    curr_result(n/2+1 downto 0) <= (others => '1'); -- begin in the middle
                     last_result                 <= (others => '0');
 
                 -- COMPUTE the square root and output when ready
@@ -48,8 +50,15 @@ begin
                         last_result <= (others => '0');
                     elsif (finished_var = '0') then
                         -- x(k+1) = x(k)-f(x(k))/f'(x(k))
-                        last_result <= curr_result;
-                        curr_result <= resize(shift_right(curr_result + unsigned(A)/curr_result,1),curr_result'length);
+                        result_check := resize(shift_right(curr_result + unsigned(A)/curr_result,1),curr_result'length);
+
+                        -- convergence check
+                        if (result_check >= curr_result) then
+                            last_result <= curr_result;
+                        else
+                            last_result <= curr_result;
+                            curr_result <= result_check;
+                        end if;
                     end if;
 
             end case;
