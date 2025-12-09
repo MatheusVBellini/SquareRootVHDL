@@ -33,9 +33,9 @@ architecture arq_seq of SQRT_TB is
 
     -- Constants
     type int_array is array (natural range <>) of integer;
-    constant TEST_COUNT    : integer := 5;
-    constant TEST_VECTOR   : int_array(0 to TEST_COUNT-1) := (0, 1, 512, 5499030, 1194877489);
-    constant RESULT_VECTOR : int_array(0 to TEST_COUNT-1) := (0, 1, 22, 2345, 34567);
+    constant TEST_COUNT    : integer := 9;
+    constant TEST_VECTOR   : int_array(0 to TEST_COUNT-1) := (0, 1, 3, 15, 127, 512, 5499030, 1194877489, 42949672);
+    constant RESULT_VECTOR : int_array(0 to TEST_COUNT-1) := (0, 1, 1, 3, 11, 22, 2345, 34567, 65535);
     constant CLK_PERIOD    : time := 10 ns;
 
 begin
