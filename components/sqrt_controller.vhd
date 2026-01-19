@@ -32,10 +32,11 @@ begin
     begin
         if (reset = '1') then
             iter     <= 1;
-            load     <= '0';
+            load     <= '1';
             flush    <= '1';
             store    <= '0';
             finished <= '0';
+            state    <= s_WAIT;
         elsif (rising_edge(clk)) then
             case state is
 
@@ -55,9 +56,12 @@ begin
 
                 -- COMPUTE: apply iterations
                 when s_COMPUTE =>
-                    if (start = '0') then
-                        state <= s_WAIT;
-                    elsif (iter <= n - 1) then
+                    load     <= '0';
+                    flush    <= '0';
+                    store    <= '0';
+                    finished <= '0';
+
+                    if (iter <= n - 1) then
                         iter <= iter + 1;
                     else
                         store <= '1';
@@ -66,12 +70,12 @@ begin
 
                 -- FINISHED: provide the result at the output tap
                 when s_FINISHED =>
-                    store <= '0';
+                    store    <= '0';
+                    load     <= '1';
+                    flush    <= '1';
                     finished <= '1';
-                    if (start = '0') then
-                        state    <= s_WAIT;
-                        finished <= '0';
-                    end if;
+                    iter     <= 1;
+                    state    <= s_WAIT;
 
             end case;
         end if;
